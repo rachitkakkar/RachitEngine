@@ -8,10 +8,6 @@
 #include "imgui.h"
 #include "sdl-imgui/imgui_impl_sdl.h"
 
-#if BX_PLATFORM_EMSCRIPTEN
-#include "emscripten.h"
-#endif // BX_PLATFORM_EMSCRIPTEN
-
 struct PosColorVertex
 {
     float x;
@@ -123,12 +119,6 @@ void main_loop(void* data)
     bgfx::submit(0, context->program);
 
     bgfx::frame();
-
-#if BX_PLATFORM_EMSCRIPTEN
-    if (context->quit) {
-        emscripten_cancel_main_loop();
-    }
-#endif
 }
 
 int main(int argc, char** argv)
@@ -149,7 +139,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-#if !BX_PLATFORM_EMSCRIPTEN
     SDL_SysWMinfo wmi;
     SDL_VERSION(&wmi.version);
     if (!SDL_GetWindowWMInfo(window, &wmi)) {
@@ -159,7 +148,6 @@ int main(int argc, char** argv)
         return 1;
     }
     bgfx::renderFrame(); // single threaded mode
-#endif // !BX_PLATFORM_EMSCRIPTEN
 
     bgfx::PlatformData pd{};
 #if BX_PLATFORM_WINDOWS
@@ -169,10 +157,7 @@ int main(int argc, char** argv)
 #elif BX_PLATFORM_LINUX
     pd.ndt = wmi.info.x11.display;
     pd.nwh = (void*)(uintptr_t)wmi.info.x11.window;
-#elif BX_PLATFORM_EMSCRIPTEN
-    pd.nwh = (void*)"#canvas";
 #endif // BX_PLATFORM_WINDOWS ? BX_PLATFORM_OSX ? BX_PLATFORM_LINUX ?
-       // BX_PLATFORM_EMSCRIPTEN
 
     bgfx::Init bgfx_init;
     bgfx_init.type = bgfx::RendererType::Count; // auto choose renderer
@@ -194,10 +179,9 @@ int main(int argc, char** argv)
     ImGui_ImplSDL2_InitForD3D(window);
 #elif BX_PLATFORM_OSX
     ImGui_ImplSDL2_InitForMetal(window);
-#elif BX_PLATFORM_LINUX || BX_PLATFORM_EMSCRIPTEN
+#elif BX_PLATFORM_LINUX
     ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 #endif // BX_PLATFORM_WINDOWS ? BX_PLATFORM_OSX ? BX_PLATFORM_LINUX ?
-       // BX_PLATFORM_EMSCRIPTEN
 
     bgfx::VertexLayout pos_col_vert_layout;
     pos_col_vert_layout.begin()
@@ -232,13 +216,9 @@ int main(int argc, char** argv)
     context.vbh = vbh;
     context.ibh = ibh;
 
-#if BX_PLATFORM_EMSCRIPTEN
-    emscripten_set_main_loop_arg(main_loop, &context, -1, 1);
-#else
     while (!context.quit) {
         main_loop(&context);
     }
-#endif // BX_PLATFORM_EMSCRIPTEN
 
     bgfx::destroy(vbh);
     bgfx::destroy(ibh);
