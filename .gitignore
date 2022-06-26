@@ -1,1 +1,6 @@
-RachitEngine
+build*/
+install/
+imgui.ini
+*.bin
+.vscode/
+third-party*/
