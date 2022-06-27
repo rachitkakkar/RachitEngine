@@ -1,3 +1,4 @@
+/*
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include "bgfx-imgui/imgui_impl_bgfx.h"
@@ -234,4 +235,26 @@ int main(int argc, char** argv)
     SDL_Quit();
 
     return 0;
+}
+*/
+
+#include "Window.h"
+
+int main() {
+    RachitEngine::Window win("RachitEngine", 800, 600);
+    bgfx::setViewClear(0,
+                     BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+                     0x443355FF, 1.0f, 0);
+    bgfx::touch(0);
+    
+    bool quit = false;
+    SDL_Event currentEvent;
+    while (!quit) {
+        while (SDL_PollEvent(&currentEvent) != 0) {
+            if (currentEvent.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+        win.Update();
+    }
 }
