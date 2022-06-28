@@ -17,7 +17,8 @@ namespace RachitEngine {
     public:
         Window(const char* title, int width, int height);
         ~Window();
-        void Update();
+        int getWidth();
+        int getHeight();
     };
 };
 

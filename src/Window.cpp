@@ -50,7 +50,6 @@ namespace RachitEngine {
         SDL_Quit();
     }
 
-    void Window::Update() {
-        bgfx::frame();
-    }
+    int Window::getWidth() { return width; }
+    int Window::getHeight() { return height; }
 };
