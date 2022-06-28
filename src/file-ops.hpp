@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FILE_OPS
+#define FILE_OPS
 
 #include <fstream>
 #include <iostream>
@@ -51,3 +52,5 @@ inline bool read_file(const std::string& filename, std::string& fileContents)
 }
 
 } // namespace fileops
+
+#endif

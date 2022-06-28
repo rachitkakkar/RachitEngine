@@ -8,7 +8,7 @@
 #include <SDL.h>
 
 namespace RachitEngine {
-    class Window {
+    class Window { // window class, in charge of initializing bgfx and an SDL window
     private:
         bgfx::PlatformData pd;
         SDL_Window* window;
